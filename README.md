@@ -1,4 +1,4 @@
-# mathjax-rails
+# MathJax-Rails
 
 Displaying math on web pages is no longer a pain, thanks to the great work of [MathJax](https://github.com/mathjax/MathJax). To quote the description from its [official website](http://www.mathjax.org/),
 
@@ -6,11 +6,13 @@ Displaying math on web pages is no longer a pain, thanks to the great work of [M
   > 
   > No more setup for readers. No more browser plugins. No more font installations… It just works.
 
-However, integrating it into a rails project makes your project folder swollen, because of the excessive amount of files contained in this package. 
+## Why bother another gem?
 
-So where to put? Put into `public` does not seem good, since beginning with rails 3.1 `public` is by default ignored in production environment. Granted that it is put in `public`, when using git, it leaves you no choice but to put mathjax inside .gitignore, which makes sharing across developers less painless, and you then get no control over what version of mathjax that other developers use.
+Integrating MathJax into a rails project however could be a pain in the ass. MathJax is HUGE. It makes your project folder swollen very much, because of the excessive amount of files contained in this package. Including mathjax inside your developing directory makes your TextMate less responsive, because when TextMate loses focus and then regains focus, it will scan the whole directory structure for change.
 
-Also, including mathjax inside your developing directory makes your TextMate less responsive when regaining focus, because TextMate will scan the whole directory structure for change.
+Another problem is, where to put? Put into `public` does not seem the best practice, since beginning with rails 3.1 `public` is by default ignored in production environment. Plus it is big, when using git, it leaves you no choice but to throw mathjax inside .gitignore, which makes sharing across developers less painless, and you then get no control over what version of mathjax that other developers use.
+
+## So?
 
 That's the time when mathjax-rails comes into play!
 
