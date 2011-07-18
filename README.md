@@ -21,11 +21,6 @@ That's the time when mathjax-rails comes into play!
   * It maintains MathJax at a system-wide directory.
   * By simply including mathjax-rails in your Gemfile, all your rails app can benefit from MathJax immediately.
   * You now are in control of the MathJax version by controlling the viersion of mathjax-rails, which is simplely done via Gemfile.
-  
-Since MathJax 1.1, some configuration is required to include it in your html page, which mathjax-rails also simplifies.
-
-  * it comes with a include helper to let you quickly configure MathJax up.
-  * And a generator that let you feel the power of MathJax right away.
 
 ## Usage
 
