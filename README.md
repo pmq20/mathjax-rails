@@ -1,8 +1,8 @@
 # MathJax-Rails
 
-Displaying math on web pages is no longer a pain, thanks to the great work of [MathJax](https://github.com/mathjax/MathJax). To quote the description from its [official website](http://www.mathjax.org/),
+We are living in an age, where displaying math on web pages is never hard, thanks to the great work of [MathJax](https://github.com/mathjax/MathJax). To quote the description from its [official website](http://www.mathjax.org/),
 
-  > MathJax is an open source JavaScript display engine for mathematics that works in all modern browsers.
+  > [MathJax](https://github.com/mathjax/MathJax) is an open source JavaScript display engine for mathematics that works in all modern browsers.
   > 
   > No more setup for readers. No more browser plugins. No more font installations… It just works.
 
