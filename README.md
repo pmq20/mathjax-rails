@@ -32,7 +32,7 @@ then
 
 	$ bundle install
 
-after which
+then execute the following to fetch the MathJax tarball
 
 	$ rails generate mathjax:fetch
 
