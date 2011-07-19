@@ -42,6 +42,7 @@ add the following to config/routes.rb (you can change the name of course)
   mathjax 'mathjax'
 ```
 add the script tag inside app/views/layouts/application.html.erb
+
 ``` erb
   > <%= mathjax_tag %>
 ```  
