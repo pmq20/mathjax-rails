@@ -32,7 +32,7 @@ To see the actual version, check the constant Mathjax::Rails::MATHJAXVERSION.
 
 add this line to your Gemfile
 
-	> gem 'mathjax-rails'
+	gem 'mathjax-rails'
   
 then
 
@@ -52,7 +52,7 @@ and it is done!
 
 To try it, write a simple formula, for example,
 
-	> \[\int_a^b f(x) dx=F(b)-F(a)\]
+	\[\int_a^b f(x) dx=F(b)-F(a)\]
 
 ## Configuration
 
