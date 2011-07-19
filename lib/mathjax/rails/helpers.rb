@@ -1,7 +1,7 @@
 module Mathjax
   module Rails
     module ViewHelpers
-      def mathjax_tag(opt)
+      def mathjax_tag(opt={})
         if false==opt[:config]
           additional = ''
         else
