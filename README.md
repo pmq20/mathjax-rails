@@ -20,16 +20,71 @@ That's the time when mathjax-rails comes into play!
 
   * It maintains MathJax at a system-wide directory.
   * By simply including mathjax-rails in your Gemfile, all your rails app can benefit from MathJax immediately.
-  * You now are in control of the MathJax version by controlling the viersion of mathjax-rails, which is simplely done via Gemfile.
+  * It can maintain several versions of MathJax. You can specify the version you want to use via Rails config file.
 
 ## Usage
 
-comming soon...
+add this line to your Gemfile
 
-## Which MathJax version does it use?
+  > gem 'mathjax-rails'
+  
+then
 
-The version of mathjax-rails reflects the version of MathJax that it contains. They are the same!
+  $ bundle install
 
-## Will it pollute my rails project?
+after which
 
-No. mathjax-rails do very few things.
+  $ rails generate mathjax:fetch
+
+add the following to config/routes.rb (you can change the name of course)
+
+``` ruby
+  mathjax 'mathjax'
+```
+add the script tag inside app/views/layouts/application.html.erb
+
+  > <%= mathjax_tag %>
+  
+and it's done!
+
+## Configuration
+
+By default mathjax-rails will use the latest version of MathJax. You can specify another inside config/application.rb:
+
+  > config.mathjax_version = '1.1a'
+
+By default the `TeX-AMS_HTML-full.js` is loaded as the configuration file.
+
+If you do not want any configuration file to be loaded:
+
+  > <%= mathjax_tag :config=>false %>
+
+If you want to load another configuration file, say `Accessible-full.js`:
+
+  > <%= mathjax_tag :config=>'Accessible-full.js' %>
+  
+Additional configuration can be added directly before mathjax_tag, for example:
+
+  > <script type="text/x-mathjax-config">
+  > MathJax.Hub.Config({
+  >   tex2jax: {
+  >     inlineMath: [ ['$','$'] ],
+  >     processEscapes: true
+  >   }
+  > });
+  > </script>
+  > <%= mathjax_tag %>
+
+For more options please consult the MathJax documentation.
+
+## What did it do to my rails project
+
+Three simple things: it adds 1 controller `MathjaxRailsController`; 1 helper method `mathjax_tag`; 1 router method `mathjax`.
+
+It won't pollute your rails project more than the above three.
+
+## Note
+
+If you have a fast CDN service at hand, you don't need this gem.
+
+Putting your MathJax at CDN is probably the best choice.
