@@ -48,7 +48,11 @@ add the script tag inside app/views/layouts/application.html.erb
 ``` rhtml
 <%= mathjax_tag %>
 ```  
-and it's done!
+and it is done!
+
+To try it, write a simple formula, for example,
+
+	> render :text=>'\[\int_a^b f(x) dx=F(b)-F(a)\]'
 
 ## Configuration
 
