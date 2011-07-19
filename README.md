@@ -44,7 +44,7 @@ add the following to config/routes.rb (you can change the name of course)
 add the script tag inside app/views/layouts/application.html.erb
 
 ``` erb
-  > <%= mathjax_tag %>
+  <%= mathjax_tag %>
 ```  
 and it's done!
 
@@ -52,29 +52,34 @@ and it's done!
 
 By default mathjax-rails will use the latest version of MathJax. You can specify another inside config/application.rb:
 
-  > config.mathjax_version = '1.1a'
-
+``` ruby
+  config.mathjax_version = '1.1a'
+```
 By default the `TeX-AMS_HTML-full.js` is loaded as the configuration file.
 
 If you do not want any configuration file to be loaded:
 
-  > <%= mathjax_tag :config=>false %>
-
+``` erb
+  <%= mathjax_tag :config=>false %>
+```
 If you want to load another configuration file, say `Accessible-full.js`:
 
-  > <%= mathjax_tag :config=>'Accessible-full.js' %>
-  
+``` erb
+  <%= mathjax_tag :config=>'Accessible-full.js' %>
+```
 Additional configuration can be added directly before mathjax_tag, for example:
 
-  > <script type="text/x-mathjax-config">
-  > MathJax.Hub.Config({
-  >   tex2jax: {
-  >     inlineMath: [ ['$','$'] ],
-  >     processEscapes: true
-  >   }
-  > });
-  > </script>
-  > <%= mathjax_tag %>
+``` rhtml
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		 tex2jax: {
+		   inlineMath: [ ['$','$'] ],
+		   processEscapes: true
+		 }
+		});
+	</script>
+  <%= mathjax_tag %>
+```
 
 For more options please consult the MathJax documentation.
 
