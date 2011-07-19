@@ -26,15 +26,15 @@ That's the time when mathjax-rails comes into play!
 
 add this line to your Gemfile
 
-  > gem 'mathjax-rails'
+	> gem 'mathjax-rails'
   
 then
 
-  $ bundle install
+	$ bundle install
 
 after which
 
-  $ rails generate mathjax:fetch
+	$ rails generate mathjax:fetch
 
 add the following to config/routes.rb (you can change the name of course)
 
