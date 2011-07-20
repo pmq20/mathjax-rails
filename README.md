@@ -18,9 +18,9 @@ Another problem is, where to put? Put into `public` does not seem the best pract
 
 That's the time when mathjax-rails comes into play!
 
-  * It maintains MathJax at a system-wide directory.
-  * By simply including mathjax-rails in your Gemfile, all your rails app can benefit from MathJax immediately.
-  * mathjax-rails always 
+* It maintains MathJax at a system-wide directory.
+* By simply including mathjax-rails in your Gemfile, all your rails app can benefit from MathJax immediately.
+* You can control the version of MathJax by controlling the version of mathjax-rails, which is done simply via bundler.
 
 ## Which version of MathJax does it use?
 
