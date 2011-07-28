@@ -99,4 +99,4 @@ Putting your MathJax at CDN is probably the best choice.
 ## ChangeLog
 
 * 2011.7.28
-Version 0.0.2 used to fail on Heroku. Now the problem is fixed. I used to use `send_file` without content_type, which causes a failure when deployed to Heroku. Now in version 0.0.3 I use `render :file=>...,` with the appropriate content-type set and the problem is solved.
+Version 0.0.2 used to fail on Heroku. Now the problem is fixed. I used to use `send_file` without content_type, which causes a failure when deployed to Heroku. Now in version 0.0.3 I use `render :type=>...,` with the appropriate content-type set and the problem is solved.
