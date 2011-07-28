@@ -7,8 +7,9 @@ class MathjaxRailsController < ActionController::Base
     
     extname = File.extname(filename)[1..-1]
     mime_type = Mime::Type.lookup_by_extension(extname)
-    content_type = mime_type.to_s unless mime_type.nil?
-
-    render :file => File.expand_path(filepath,__FILE__), :content_type => content_type
+    options = Hash.new 
+    options[:type] = mime_type.to_s unless mime_type.nil?
+    options[:disposition] = 'inline'
+    send_file File.expand_path(filepath,__FILE__), options
   end
 end
