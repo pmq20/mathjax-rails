@@ -96,6 +96,17 @@ If you have a fast CDN service at hand, you don't need this gem.
 
 Putting your MathJax at CDN is probably the best choice.
 
+By `dmarczal`, 
+
+To work in rails 3.1 on production environment wih ngnix I just comment the follow line in production.rb
+
+```
+#config/environments/production.rb
+#config.action_dispatch.x_sendfile_header = "X-Sendfile"
+```
+
+
+
 ## ChangeLog
 
 * 2011.7.28
