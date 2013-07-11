@@ -10,6 +10,11 @@ class MathjaxRailsController < ActionController::Base
     options = Hash.new 
     options[:type] = mime_type.to_s unless mime_type.nil?
     options[:disposition] = 'inline'
-    send_file File.expand_path(filepath,__FILE__), options
+    file = File.expand_path(filepath, __FILE__)
+    if File.exists?(file)
+      send_file file, options
+    else
+      render status: 404
+    end
   end
 end
