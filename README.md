@@ -1,6 +1,6 @@
 # MathjaxRails
 
-TODO: Write a gem description
+A Ruby gem for including mathjax for Rails 3.x or above apps
 
 ## Installation
 
@@ -18,7 +18,25 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+
+add the following to config/routes.rb (you can change the name of course)
+
+``` ruby
+mathjax 'mathjax'
+```
+
+add the script tag inside app/views/layouts/application.html.erb
+
+``` rhtml
+<%= mathjax_tag %>
+```  
+
+and it is done!
+
+To try it, write a simple formula, for example,
+
+  \[\int_a^b f(x) dx=F(b)-F(a)\]
+
 
 ## Contributing
 
