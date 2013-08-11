@@ -1,3 +1,4 @@
+[![Gem Version](https://badge.fury.io/rb/mathjax_rails.png)](http://badge.fury.io/rb/mathjax_rails)
 # MathjaxRails
 
 A Ruby gem for including mathjax for Rails 3.x or above apps
