@@ -42,7 +42,7 @@ then
 
 The new gem is more recently mentained.Thank you Manu S Ajith. 
 
-[![Gem Version](https://badge.fury.io/rb/mathjax_rails.png)](http://badge.fury.io/rb/mathjax_rails)
+[![Gem Version](https://badge.fury.io/rb/mathjax-rails.png)](http://badge.fury.io/rb/mathjax-rails)
 # MathjaxRails
 
 A Ruby gem for including mathjax for Rails 3.x or above apps
@@ -51,7 +51,7 @@ A Ruby gem for including mathjax for Rails 3.x or above apps
 
 Add this line to your application's Gemfile:
 
-    gem 'mathjax_rails'
+    gem 'mathjax-rails'
 
 And then execute:
 
@@ -59,7 +59,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install mathjax_rails
+    $ gem install mathjax-rails
 
 ## Usage
 
