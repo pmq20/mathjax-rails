@@ -38,16 +38,44 @@ then
 
 	$ bundle install
 
+## The other gem
+
+The new gem is more recently mentained.Thank you Manu S Ajith. 
+
+[![Gem Version](https://badge.fury.io/rb/mathjax_rails.png)](http://badge.fury.io/rb/mathjax_rails)
+# MathjaxRails
+
+A Ruby gem for including mathjax for Rails 3.x or above apps
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+    gem 'mathjax_rails'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install mathjax_rails
+
+## Usage
+
+
 add the following to config/routes.rb (you can change the name of course)
 
 ``` ruby
 mathjax 'mathjax'
 ```
+
 add the script tag inside app/views/layouts/application.html.erb
 
 ``` rhtml
 <%= mathjax_tag %>
 ```  
+
 and it is done!
 
 To try it, write a simple formula, for example,
@@ -111,3 +139,12 @@ To work in rails 3.1 on production environment wih ngnix I just comment the foll
 
 * 2011.7.28
 Version 0.0.2 used to fail on Heroku. Now the problem is fixed. I used to use `send_file` without content_type, which causes a failure when deployed to Heroku. Now in version 0.0.3 I use `render :type=>...,` with the appropriate content-type set and the problem is solved.
+
+
+## Contributing
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
