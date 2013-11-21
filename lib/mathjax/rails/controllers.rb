@@ -1,4 +1,4 @@
-class MathjaxRailsController < ActionController::Base
+class Mathjax::Rails::MathjaxRailsController < ActionController::Base
   def giveOutStaticFile
     ext = ''
     ext = ".#{params[:format]}" if params[:format]
