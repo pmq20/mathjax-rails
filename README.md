@@ -137,6 +137,9 @@ To work in rails 3.1 on production environment wih ngnix I just comment the foll
 
 ## ChangeLog
 
+* 2013.11.21
+Added support for Rails 4 apps.
+
 * 2011.7.28
 Version 0.0.2 used to fail on Heroku. Now the problem is fixed. I used to use `send_file` without content_type, which causes a failure when deployed to Heroku. Now in version 0.0.3 I use `render :type=>...,` with the appropriate content-type set and the problem is solved.
 
