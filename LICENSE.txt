@@ -1,4 +1,4 @@
-Copyright (c) 2013 Manu S Ajith
+Copyright (c) 2011-2013 Minqi Pan, Manu S Ajith
 
 MIT License
 
