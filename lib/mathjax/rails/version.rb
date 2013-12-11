@@ -1,7 +1,7 @@
 module Mathjax
   module Rails
-    VERSION = '1.0.3'
-    MATHJAXVERSION = '1.1a'
-    DIRNAME = 'mathjax-MathJax-da8d488'
+    VERSION = '2.3.0'
+    MATHJAXVERSION = '2.3'
+    DIRNAME = 'mathjax'
   end
 end
