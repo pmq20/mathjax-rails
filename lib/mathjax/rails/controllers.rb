@@ -14,7 +14,7 @@ class Mathjax::Rails::MathjaxRailsController < ActionController::Base
     if File.exists?(file)
       send_file file, options
     else
-      render status: 404
+      render :status => 404
     end
   end
 end
