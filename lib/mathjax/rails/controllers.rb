@@ -4,10 +4,10 @@ class Mathjax::Rails::MathjaxRailsController < ActionController::Base
     ext = ".#{params[:format]}" if params[:format]
     filename = params[:uri]+ext
     filepath = "../../../../vendor/#{Mathjax::Rails::DIRNAME}/#{filename}"
-    
+
     extname = File.extname(filename)[1..-1]
     mime_type = Mime::Type.lookup_by_extension(extname)
-    options = Hash.new 
+    options = Hash.new
     options[:type] = mime_type.to_s unless mime_type.nil?
     options[:disposition] = 'inline'
     file = File.expand_path(filepath, __FILE__)
