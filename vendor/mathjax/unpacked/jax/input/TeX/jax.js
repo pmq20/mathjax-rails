@@ -11,7 +11,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2009-2013 The MathJax Consortium
+ *  Copyright (c) 2009-2015 The MathJax Consortium
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@
     Push: function () {
       var i, m, item, top;
       for (i = 0, m = arguments.length; i < m; i++) {
-        item = arguments[i];
+        item = arguments[i]; if (!item) continue;
         if (item instanceof MML.mbase) {item = STACKITEM.mml(item)}
         item.global = this.global;
         top = (this.data.length ? this.Top().checkItem(item) : true);
@@ -167,6 +167,7 @@
             else {item.data[0] = MML.mrow(this.primes.With({variantForm:true}),item.data[0])}
         }
         this.data[0].SetData(this.position,item.data[0]);
+        if (this.movesupsub != null) {this.data[0].movesupsub = this.movesupsub}
         return STACKITEM.mml(this.data[0]);
       }
       if (this.SUPER(arguments).checkItem.call(this,item))
@@ -184,9 +185,8 @@
         var mml = MML.mfrac(this.num,this.mmlData(false));
         if (this.thickness != null) {mml.linethickness = this.thickness}
         if (this.open || this.close) {
-          mml.texClass = MML.TEXCLASS.INNER;
           mml.texWithDelims = true;
-          mml = TEX.fenced(this.open,mml,this.close);
+          mml = TEX.fixedFence(this.open,mml,this.close);
         }
         return [STACKITEM.mml(mml), item];
       }
@@ -258,7 +258,7 @@
   STACKITEM.array = STACKITEM.Subclass({
     type: "array", isOpen: true, arraydef: {},
     Init: function () {
-      this.table = []; this.row = []; this.env = {}; this.frame = []
+      this.table = []; this.row = []; this.env = {}; this.frame = []; this.hfill = [];
       this.SUPER(arguments).Init.apply(this,arguments);
     },
     checkItem: function (item) {
@@ -286,8 +286,23 @@
       }
       return this.SUPER(arguments).checkItem.call(this,item);
     },
-    EndEntry: function () {this.row.push(MML.mtd.apply(MML,this.data)); this.data = []},
-    EndRow:   function () {this.table.push(MML.mtr.apply(MML,this.row)); this.row = []},
+    EndEntry: function () {
+      var mtd = MML.mtd.apply(MML,this.data);
+      if (this.hfill.length) {
+        if (this.hfill[0] === 0) mtd.columnalign = "right";
+        if (this.hfill[this.hfill.length-1] === this.data.length)
+          mtd.columnalign = (mtd.columnalign ? "center" : "left");
+      }
+      this.row.push(mtd); this.data = []; this.hfill = [];
+    },
+    EndRow:   function () {
+      var mtr = MML.mtr;
+      if (this.isNumbered && this.row.length === 3) {
+        this.row.unshift(this.row.pop());  // move equation number to first position
+        mtr = MML.mlabeledtr;
+      }
+      this.table.push(mtr.apply(MML,this.row)); this.row = [];
+    },
     EndTable: function () {
       if (this.data.length || this.row.length) {this.EndEntry(); this.EndRow()}
       this.checkLines();
@@ -424,6 +439,7 @@
         '%':   'Comment',
         '&':   'Entry',
         '#':   'Hash',
+        '\u00A0': 'Space',
         '\u2019': 'Prime'
       },
       
@@ -912,11 +928,14 @@
         hline:             ['HLine','solid'],
         hdashline:         ['HLine','dashed'],
 //      noalign:            'HandleNoAlign',
-        eqalignno:         ['Matrix',null,null,"right left right",MML.LENGTH.THICKMATHSPACE+" 3em",".5em",'D'],
-        leqalignno:        ['Matrix',null,null,"right left right",MML.LENGTH.THICKMATHSPACE+" 3em",".5em",'D'],
+        eqalignno:         ['Matrix',null,null,"right left",MML.LENGTH.THICKMATHSPACE,".5em",'D',null,"right"],
+        leqalignno:        ['Matrix',null,null,"right left",MML.LENGTH.THICKMATHSPACE,".5em",'D',null,"left"],
+        hfill:              'HFill',
+        hfil:               'HFill',   // \hfil treated as \hfill for now
+        hfilll:             'HFill',   // \hfilll treated as \hfill for now
 
         //  TeX substitution macros
-        bmod:              ['Macro','\\mathbin{\\mmlToken{mo}{mod}}'],
+        bmod:              ['Macro','\\mmlToken{mo}[lspace="thickmathspace" rspace="thickmathspace"]{mod}'],
         pmod:              ['Macro','\\pod{\\mmlToken{mi}{mod}\\kern 6mu #1}',1],
         mod:               ['Macro','\\mathchoice{\\kern18mu}{\\kern12mu}{\\kern12mu}{\\kern12mu}\\mmlToken{mi}{mod}\\,\\,#1',1],
         pod:               ['Macro','\\mathchoice{\\kern18mu}{\\kern8mu}{\\kern8mu}{\\kern8mu}(#1)',1],
@@ -933,8 +952,10 @@
         mathsf:            ['Macro','{\\sf #1}',1],
         mathtt:            ['Macro','{\\tt #1}',1],
         textrm:            ['Macro','\\mathord{\\rm\\text{#1}}',1],
-        textit:            ['Macro','\\mathord{\\it{\\text{#1}}}',1],
-        textbf:            ['Macro','\\mathord{\\bf{\\text{#1}}}',1],
+        textit:            ['Macro','\\mathord{\\it\\text{#1}}',1],
+        textbf:            ['Macro','\\mathord{\\bf\\text{#1}}',1],
+        textsf:            ['Macro','\\mathord{\\sf\\text{#1}}',1],
+        texttt:            ['Macro','\\mathord{\\tt\\text{#1}}',1],
         pmb:               ['Macro','\\rlap{#1}\\kern1px{#1}',1],
         TeX:               ['Macro','T\\kern-.14em\\lower.5ex{E}\\kern-.115em X'],
         LaTeX:             ['Macro','L\\kern-.325em\\raise.21em{\\scriptstyle{A}}\\kern-.17em\\TeX'],
@@ -944,11 +965,12 @@
         not:                'Not',
         dots:               'Dots',
         space:              'Tilde',
+        '\u00A0':           'Tilde',
         
 
         //  LaTeX
-        begin:              'Begin',
-        end:                'End',
+        begin:              'BeginEnd',
+        end:                'BeginEnd',
 
         newcommand:        ['Extension','newcommand'],
         renewcommand:      ['Extension','newcommand'],
@@ -1165,48 +1187,56 @@
     Superscript: function (c) {
       if (this.GetNext().match(/\d/)) // don't treat numbers as a unit
         {this.string = this.string.substr(0,this.i+1)+" "+this.string.substr(this.i+1)}
-      var position, primes, base, top = this.stack.Top();
+      var primes, base, top = this.stack.Top();
       if (top.type === "prime") {base = top.data[0]; primes = top.data[1]; this.stack.Pop()}
         else {base = this.stack.Prev(); if (!base) {base = MML.mi("")}}
       if (base.isEmbellishedWrapper) {base = base.data[0].data[0]}
-      if (base.type === "msubsup") {
-        if (base.data[base.sup])
-          {TEX.Error(["DoubleExponent","Double exponent: use braces to clarify"])}
-        position = base.sup;
-      } else if (base.movesupsub) {
-        if (base.type !== "munderover" || base.data[base.over]) {
-          if (base.movablelimits && base.isa(MML.mi)) {base = this.mi2mo(base)}
-          base = MML.munderover(base,null,null).With({movesupsub:true})
+      var movesupsub = base.movesupsub, position = base.sup;
+      if ((base.type === "msubsup" && base.data[base.sup]) ||
+          (base.type === "munderover" && base.data[base.over] && !base.subsupOK))
+           {TEX.Error(["DoubleExponent","Double exponent: use braces to clarify"])}
+      if (base.type !== "msubsup") {
+        if (movesupsub) {
+          if (base.type !== "munderover" || base.data[base.over]) {
+            if (base.movablelimits && base.isa(MML.mi)) {base = this.mi2mo(base)}
+            base = MML.munderover(base,null,null).With({movesupsub:true})
+          }
+          position = base.over;
+        } else {
+          base = MML.msubsup(base,null,null);
+          position = base.sup;
         }
-        position = base.over;
-      } else {
-        base = MML.msubsup(base,null,null);
-        position = base.sup;
       }
-      this.Push(STACKITEM.subsup(base).With({position: position, primes: primes}));
+      this.Push(STACKITEM.subsup(base).With({
+        position: position, primes: primes, movesupsub: movesupsub
+      }));
     },
     Subscript: function (c) {
       if (this.GetNext().match(/\d/)) // don't treat numbers as a unit
         {this.string = this.string.substr(0,this.i+1)+" "+this.string.substr(this.i+1)}
-      var position, primes, base, top = this.stack.Top();
+      var primes, base, top = this.stack.Top();
       if (top.type === "prime") {base = top.data[0]; primes = top.data[1]; this.stack.Pop()}
         else {base = this.stack.Prev(); if (!base) {base = MML.mi("")}}
       if (base.isEmbellishedWrapper) {base = base.data[0].data[0]}
-      if (base.type === "msubsup") {
-        if (base.data[base.sub])
-          {TEX.Error(["DoubleSubscripts","Double subscripts: use braces to clarify"])}
-        position = base.sub;
-      } else if (base.movesupsub) {
-        if (base.type !== "munderover" || base.data[base.under]) {
-          if (base.movablelimits && base.isa(MML.mi)) {base = this.mi2mo(base)}
-          base = MML.munderover(base,null,null).With({movesupsub:true})
+      var movesupsub = base.movesupsub, position = base.sub;
+      if ((base.type === "msubsup" && base.data[base.sub]) ||
+          (base.type === "munderover" && base.data[base.under] && !base.subsupOK))
+           {TEX.Error(["DoubleSubscripts","Double subscripts: use braces to clarify"])}
+      if (base.type !== "msubsup") {
+        if (movesupsub) {
+          if (base.type !== "munderover" || base.data[base.under]) {
+            if (base.movablelimits && base.isa(MML.mi)) {base = this.mi2mo(base)}
+            base = MML.munderover(base,null,null).With({movesupsub:true})
+          }
+          position = base.under;
+        } else {
+          base = MML.msubsup(base,null,null);
+          position = base.sub;
         }
-        position = base.under;
-      } else {
-        base = MML.msubsup(base,null,null);
-        position = base.sub;
       }
-      this.Push(STACKITEM.subsup(base).With({position: position, primes: primes}));
+      this.Push(STACKITEM.subsup(base).With({
+        position: position, primes: primes, movesupsub: movesupsub
+      }));
     },
     PRIME: "\u2032", SMARTQUOTE: "\u2019",
     Prime: function (c) {
@@ -1249,8 +1279,8 @@
      *  Handle other characters (as <mo> elements)
      */
     Other: function (c) {
-      var def = {stretchy: false}, mo;
-      if (this.stack.env.font) {def.mathvariant = this.stack.env.font}
+      var def, mo;
+      if (this.stack.env.font) {def = {mathvariant: this.stack.env.font}}
       if (TEXDEF.remap[c]) {
         c = TEXDEF.remap[c];
         if (c instanceof Array) {def = c[1]; c = c[0]}
@@ -1258,6 +1288,7 @@
       } else {
         mo = MML.mo(c).With(def);
       }
+      if (mo.autoDefault("stretchy",true)) {mo.stretchy = false}
       if (mo.autoDefault("texClass",true) == "") {mo = MML.TeXAtom(mo)}
       this.Push(this.mmlToken(mo));
     },
@@ -1319,10 +1350,16 @@
     },
     Limits: function (name,limits) {
       var op = this.stack.Prev("nopop");
-      if (!op || op.texClass !== MML.TEXCLASS.OP)
+      if (!op || (op.Get("texClass") !== MML.TEXCLASS.OP && op.movesupsub == null))
         {TEX.Error(["MisplacedLimits","%1 is allowed only on operators",name])}
+      var top = this.stack.Top();
+      if (op.type === "munderover" && !limits) {
+        op = top.data[top.data.length-1] = MML.msubsup.apply(MML.subsup,op.data);
+      } else if (op.type === "msubsup" && limits) {
+        op = top.data[top.data.length-1] = MML.munderover.apply(MML.underover,op.data);
+      }
       op.movesupsub = (limits ? true : false);
-      op.movablelimits = false;
+      op.Core().movablelimits = false;
     },
     
     Over: function (name,open,close) {
@@ -1393,11 +1430,17 @@
       var pos = {o: "over", u: "under"}[name.charAt(1)];
       var base = this.ParseArg(name);
       if (base.Get("movablelimits")) {base.movablelimits = false}
+      if (base.isa(MML.munderover) && base.isEmbellished()) {
+        base.Core().With({lspace:0,rspace:0}); // get spacing right for NativeMML
+        base = MML.mrow(MML.mo().With({rspace:0}),base);  // add an empty <mi> so it's not embellished any more
+      }
       var mml = MML.munderover(base,null,null);
-      if (stack) {mml.movesupsub = true}
-      mml.data[mml[pos]] = 
-        this.mmlToken(MML.mo(MML.entity("#x"+c)).With({stretchy:true, accent:(pos == "under")}));
-      this.Push(mml);
+      mml.SetData(
+        mml[pos], 
+        this.mmlToken(MML.mo(MML.entity("#x"+c)).With({stretchy:true, accent:(pos==="under")}))
+      );
+      if (stack) {mml = MML.TeXAtom(mml).With({texClass:MML.TEXCLASS.OP, movesupsub:true})}
+      this.Push(mml.With({subsupOK:true}));
     },
     
     Overset: function (name) {
@@ -1433,10 +1476,10 @@
       if (!MML[type] || !MML[type].prototype.isToken)
         {TEX.Error(["NotMathMLToken","%1 is not a token element",type])}
       while (attr !== "") {
-        match = attr.match(/^([a-z]+)\s*=\s*(\'[^']*'|"[^"]*"|[^ ]*)\s*/i);
+        match = attr.match(/^([a-z]+)\s*=\s*('[^']*'|"[^"]*"|[^ ,]*)\s*,?\s*/i);
         if (!match)
           {TEX.Error(["InvalidMathMLAttr","Invalid MathML attribute: %1",attr])}
-        if (!MML[type].prototype.defaults[match[1]] && !this.MmlTokenAllow[match[1]]) {
+        if (MML[type].prototype.defaults[match[1]] == null && !this.MmlTokenAllow[match[1]]) {
           TEX.Error(["UnknownAttrForElement",
                      "%1 is not a recognized attribute for %2",
                      match[1],type]);
@@ -1486,7 +1529,7 @@
     
     Lap: function (name) {
       var mml = MML.mpadded(this.ParseArg(name)).With({width: 0});
-      if (name === "\\llap") {mml.lspace = "-1 width"}
+      if (name === "\\llap") {mml.lspace = "-1width"}
       this.Push(MML.TeXAtom(mml));
     },
     
@@ -1531,7 +1574,7 @@
     MakeBig: function (name,mclass,size) {
       size *= TEXDEF.p_height;
       size = String(size).replace(/(\.\d\d\d).+/,'$1')+"em";
-      var delim = this.GetDelimiter(name);
+      var delim = this.GetDelimiter(name,true);
       this.Push(MML.TeXAtom(MML.mo(delim).With({
         minsize: size, maxsize: size,
         fence: true, stretchy: true, symmetric: true
@@ -1541,7 +1584,7 @@
     BuildRel: function (name) {
       var top = this.ParseUpTo(name,"\\over");
       var bot = this.ParseArg(name);
-      this.Push(MML.TeXAtom(MML.munderover(bot,null,top)).With({mclass: MML.TEXCLASS.REL}));
+      this.Push(MML.TeXAtom(MML.munderover(bot,null,top)).With({texClass: MML.TEXCLASS.REL}));
     },
     
     HBox: function (name,style) {
@@ -1599,7 +1642,7 @@
       }
     },
     
-    Matrix: function (name,open,close,align,spacing,vspacing,style,cases) {
+    Matrix: function (name,open,close,align,spacing,vspacing,style,cases,numbered) {
       var c = this.GetNext();
       if (c === "")
         {TEX.Error(["MissingArgFor","Missing argument for %1",name])}
@@ -1612,6 +1655,7 @@
         }
       });
       if (cases)         {array.isCases = true}
+      if (numbered)      {array.isNumbered = true; array.arraydef.side = numbered}
       if (open || close) {array.open = open; array.close = close}
       if (style === "D") {array.arraydef.displaystyle = true}
       if (align != null) {array.arraydef.columnalign = align}
@@ -1648,9 +1692,8 @@
     CrLaTeX: function (name) {
       var n;
       if (this.string.charAt(this.i) === "[") {
-        n = this.GetBrackets(name,"").replace(/ /g,"");
-        if (n &&
-            !n.match(/^((-?(\.\d+|\d+(\.\d*)?))(pt|em|ex|mu|mm|cm|in|pc))$/)) {
+        n = this.GetBrackets(name,"").replace(/ /g,"").replace(/,/,".");
+        if (n && !this.matchDimen(n)) {
           TEX.Error(["BracketMustBeDimension",
                      "Bracket argument to %1 must be a dimension",name]);
         }
@@ -1667,17 +1710,22 @@
         }
       } else {
         if (n) {this.Push(MML.mspace().With({depth:n}))}
-        this.Push(MML.mo().With({linebreak:MML.LINEBREAK.NEWLINE}));
+        this.Push(MML.mspace().With({linebreak:MML.LINEBREAK.NEWLINE}));
       }
     },
     emPerInch: 7.2,
+    pxPerInch: 72,
+    matchDimen: function (dim) {
+      return dim.match(/^(-?(?:\.\d+|\d+(?:\.\d*)?))(px|pt|em|ex|mu|pc|in|mm|cm)$/);
+    },
     dimen2em: function (dim) {
-      var match = dim.match(/^(-?(?:\.\d+|\d+(?:\.\d*)?))(pt|em|ex|mu|pc|in|mm|cm)/);
+      var match = this.matchDimen(dim);
       var m = parseFloat(match[1]||"1"), unit = match[2];
       if (unit === "em") {return m}
       if (unit === "ex") {return m * .43}
       if (unit === "pt") {return m / 10}                    // 10 pt to an em
       if (unit === "pc") {return m * 1.2}                   // 12 pt to a pc
+      if (unit === "px") {return m * this.emPerInch / this.pxPerInch}
       if (unit === "in") {return m * this.emPerInch}
       if (unit === "cm") {return m * this.emPerInch / 2.54} // 2.54 cm to an inch
       if (unit === "mm") {return m * this.emPerInch / 25.4} // 10 mm to a cm
@@ -1704,30 +1752,43 @@
       }
     },
     
+    HFill: function (name) {
+      var top = this.stack.Top();
+      if (top.isa(STACKITEM.array)) top.hfill.push(top.data.length);
+        else TEX.Error(["UnsupportedHFill","Unsupported use of %1",name]);
+    },
+    
+
+    
    /************************************************************************/
    /*
     *   LaTeX environments
     */
 
-    Begin: function (name) {
-      var env = this.GetArgument(name);
-      if (env.match(/[^a-z*]/i))
-        {TEX.Error(["InvalidEnv","Invalid environment name '%1'",env])}
+    BeginEnd: function (name) {
+      var env = this.GetArgument(name), isEnd = false;
+      if (env.match(/^\\end\\/)) {isEnd = true; env = env.substr(5)} // special \end{} for \newenvironment environments
+      if (env.match(/\\/i)) {TEX.Error(["InvalidEnv","Invalid environment name '%1'",env])}
       var cmd = this.envFindName(env);
-      if (!cmd)
-        {TEX.Error(["UnknownEnv","Unknown environment '%1'",env])}
-      if (++this.macroCount > TEX.config.MAXMACROS) {
-        TEX.Error(["MaxMacroSub2",
-                   "MathJax maximum substitution count exceeded; " +
-                   "is there a recursive latex environment?"]);
-      }
+      if (!cmd) {TEX.Error(["UnknownEnv","Unknown environment '%1'",env])}
       if (!(cmd instanceof Array)) {cmd = [cmd]}
-      var mml = STACKITEM.begin().With({name: env, end: cmd[1], parse:this});
-      if (cmd[0] && this[cmd[0]]) {mml = this[cmd[0]].apply(this,[mml].concat(cmd.slice(2)))}
+      var end = (cmd[1] instanceof Array ? cmd[1][0] : cmd[1]);
+      var mml = STACKITEM.begin().With({name: env, end: end, parse:this});
+      if (name === "\\end") {
+        if (!isEnd && cmd[1] instanceof Array && this[cmd[1][1]]) {
+          mml = this[cmd[1][1]].apply(this,[mml].concat(cmd.slice(2)));
+        } else {
+          mml = STACKITEM.end().With({name: env});
+        }
+      } else {
+        if (++this.macroCount > TEX.config.MAXMACROS) {
+          TEX.Error(["MaxMacroSub2",
+                     "MathJax maximum substitution count exceeded; " +
+                     "is there a recursive latex environment?"]);
+        }
+        if (cmd[0] && this[cmd[0]]) {mml = this[cmd[0]].apply(this,[mml].concat(cmd.slice(2)))}
+      }
       this.Push(mml);
-    },
-    End: function (name) {
-      this.Push(STACKITEM.end().With({name: this.GetArgument(name)}));
     },
     envFindName: function (name) {return TEXDEF.environment[name]},
     
@@ -1805,7 +1866,7 @@
      *   Check if the next character is a space
      */
     nextIsSpace: function () {
-      return this.string.charAt(this.i).match(/[ \n\r\t]/);
+      return this.string.charAt(this.i).match(/\s/);
     },
     
     /*
@@ -1886,11 +1947,12 @@
     /*
      *  Get the name of a delimiter (check it in the delimiter list).
      */
-    GetDelimiter: function (name) {
+    GetDelimiter: function (name,braceOK) {
       while (this.nextIsSpace()) {this.i++}
-      var c = this.string.charAt(this.i);
-      if (this.i < this.string.length) {
-        this.i++; if (c == "\\") {c += this.GetCS(name)}
+      var c = this.string.charAt(this.i); this.i++;
+      if (this.i <= this.string.length) {
+        if (c == "\\") {c += this.GetCS(name)}
+        else if (c === "{" && braceOK) {this.i--; c = this.GetArgument(name)}
         if (TEXDEF.delimiter[c] != null) {return this.convertDelimiter(c)}
       }
       TEX.Error(["MissingOrUnrecognizedDelim",
@@ -1905,14 +1967,14 @@
       if (this.nextIsSpace()) {this.i++}
       if (this.string.charAt(this.i) == '{') {
         dimen = this.GetArgument(name);
-        if (dimen.match(/^\s*([-+]?(\.\d+|\d+(\.\d*)?))\s*(pt|em|ex|mu|px|mm|cm|in|pc)\s*$/))
-          {return dimen.replace(/ /g,"")}
+        if (dimen.match(/^\s*([-+]?([.,]\d+|\d+([.,]\d*)?))\s*(pt|em|ex|mu|px|mm|cm|in|pc)\s*$/))
+          {return dimen.replace(/ /g,"").replace(/,/,".")}
       } else {
         dimen = this.string.slice(this.i);
-        var match = dimen.match(/^\s*(([-+]?(\.\d+|\d+(\.\d*)?))\s*(pt|em|ex|mu|px|mm|cm|in|pc)) ?/);
+        var match = dimen.match(/^\s*(([-+]?([.,]\d+|\d+([.,]\d*)?))\s*(pt|em|ex|mu|px|mm|cm|in|pc)) ?/);
         if (match) {
           this.i += match[0].length;
-          return match[1].replace(/ /g,"");
+          return match[1].replace(/ /g,"").replace(/,/,".");
         }
       }
       TEX.Error(["MissingDimOrUnits",
@@ -1958,7 +2020,7 @@
     InternalMath: function (text,level) {
       var def = {displaystyle: false}; if (level != null) {def.scriptlevel = level}
       if (this.stack.env.font) {def.mathvariant = this.stack.env.font}
-      if (!text.match(/\\?\$|\\\(|\\(eq)?ref\s*\{/)) {return [this.InternalText(text,def)]}
+      if (!text.match(/\\?[${}\\]|\\\(|\\(eq)?ref\s*\{/)) {return [this.InternalText(text,def)]}
       var i = 0, k = 0, c, match = '';
       var mml = [];
       while (i < text.length) {
@@ -1986,8 +2048,8 @@
             } else if (c === ')' && match === ')') {
               mml.push(MML.TeXAtom(TEX.Parse(text.slice(k,i-2),{}).mml().With(def)));
               match = ''; k = i;
-            } else if (c === '$' && match === '')  {
-              i--; text = text.substr(0,i-1) + text.substr(i); // remove \ from \$
+            } else if (c.match(/[${}\\]/) && match === '')  {
+              i--; text = text.substr(0,i-1) + text.substr(i); // remove \ from \$, \{, \}, or \\
             }
           }
         }
@@ -2051,6 +2113,7 @@
     },
     
     sourceMenuTitle: /*_(MathMenu)*/ ["TeXCommands","TeX Commands"],
+    annotationEncoding: "application/x-tex",
 
     prefilterHooks: MathJax.Callback.Hooks(true),    // hooks to run before processing TeX
     postfilterHooks: MathJax.Callback.Hooks(true),   // hooks to run after processing TeX
@@ -2074,20 +2137,21 @@
       var mml, isError = false, math = MathJax.HTML.getScript(script);
       var display = (script.type.replace(/\n/g," ").match(/(;|\s|\n)mode\s*=\s*display(;|\s|\n|$)/) != null);
       var data = {math:math, display:display, script:script};
-      this.prefilterHooks.Execute(data); math = data.math;
+      var callback = this.prefilterHooks.Execute(data); if (callback) return callback;
+      math = data.math;
       try {
         mml = TEX.Parse(math).mml();
-//        mml = MML.semantics(mml,MML.annotation(math).With({encoding:"application/x-tex"}));
       } catch(err) {
         if (!err.texError) {throw err}
         mml = this.formatError(err,math,display,script);
         isError = true;
       }
+      if (mml.isa(MML.mtable) && mml.displaystyle === "inherit") mml.displaystyle = display; // for tagged equations
       if (mml.inferred) {mml = MML.apply(MathJax.ElementJax,mml.data)} else {mml = MML(mml)}
       if (display) {mml.root.display = "block"}
       if (isError) {mml.texError = true}
-      data.math = mml; this.postfilterHooks.Execute(data);
-      return data.math;
+      data.math = mml; 
+      return this.postfilterHooks.Execute(data) || data.math;
     },
     prefilterMath: function (math,displaystyle,script) {
       return math;
@@ -2125,12 +2189,26 @@
      *  Create an mrow that has stretchy delimiters at either end, as needed
      */
     fenced: function (open,mml,close) {
-      var mrow = MML.mrow();
-      mrow.open = open; mrow.close = close;
-      if (open) {mrow.Append(MML.mo(open).With({fence:true, stretchy:true, texClass:MML.TEXCLASS.OPEN}))}
+      var mrow = MML.mrow().With({open:open, close:close, texClass:MML.TEXCLASS.INNER});
+      mrow.Append(MML.mo(open).With({fence:true, stretchy:true, texClass:MML.TEXCLASS.OPEN}));
       if (mml.type === "mrow") {mrow.Append.apply(mrow,mml.data)} else {mrow.Append(mml)}
-      if (close) {mrow.Append(MML.mo(close).With({fence:true, stretchy:true, texClass:MML.TEXCLASS.CLOSE}))}
+      mrow.Append(MML.mo(close).With({fence:true, stretchy:true, texClass:MML.TEXCLASS.CLOSE}));
       return mrow;
+    },
+    /*
+     *  Create an mrow that has \mathchoice using \bigg and \big for the delimiters
+     */
+    fixedFence: function (open,mml,close) {
+      var mrow = MML.mrow().With({open:open, close:close, texClass:MML.TEXCLASS.ORD});
+      if (open) {mrow.Append(this.mathPalette(open,"l"))}
+      if (mml.type === "mrow") {mrow.Append.apply(mrow,mml.data)} else {mrow.Append(mml)}
+      if (close) {mrow.Append(this.mathPalette(close,"r"))}
+      return mrow;
+    },
+    mathPalette: function (fence,side) {
+      if (fence === '{' || fence === '}') {fence = "\\"+fence}
+      var D = '{\\bigg'+side+' '+fence+'}', T = '{\\big'+side+' '+fence+'}';
+      return TEX.Parse('\\mathchoice'+D+T+T+T).mml();
     },
     
     //

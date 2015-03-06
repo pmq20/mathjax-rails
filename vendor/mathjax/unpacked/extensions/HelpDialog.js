@@ -9,7 +9,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2013 The MathJax Consortium
+ *  Copyright (c) 2013-2015 The MathJax Consortium
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,14 +27,14 @@
 (function (HUB,HTML,AJAX,OUTPUT,LOCALE) {
 
   var HELP = MathJax.Extension.Help = {
-    version: "2.3"
+    version: "2.5.0"
   };
 
   var STIXURL = "http://www.stixfonts.org/";
   var MENU = MathJax.Menu;
 
   var CONFIG = HUB.CombineConfig("HelpDialog",{
-    closeImg: AJAX.fileURL(OUTPUT.imageDir+"/CloseX-31.png"), // image for close "X" for mobiles
+    closeImg: AJAX.urlRev(OUTPUT.imageDir+"/CloseX-31.png"), // image for close "X" for mobiles
 
     styles: {
       "#MathJax_Help": {
@@ -95,7 +95,7 @@
         ["div",{style:{"margin-left":"1em"}},[
           ["p",{},[["ShowMath",
             "*Show Math As* allows you to view the formula's source markup " +
-            "for copy & paste (as MathML or in its origianl format)."]]
+            "for copy & paste (as MathML or in its original format)."]]
           ],
           ["p",{},[["Settings",
             "*Settings* gives you control over features of MathJax, such as the " +
