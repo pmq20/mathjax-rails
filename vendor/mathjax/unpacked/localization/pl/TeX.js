@@ -5,7 +5,7 @@
  *
  *  MathJax/localization/pl/TeX.js
  *
- *  Copyright (c) 2009-2013 The MathJax Consortium
+ *  Copyright (c) 2009-2015 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
  */
 
 MathJax.Localization.addTranslation("pl","TeX",{
-        version: "2.3",
+        version: "2.5.0",
         isLoaded: true,
         strings: {
           ExtraOpenMissingClose: "Nadmiarowy nawias otwieraj\u0105cy lub brakuj\u0105cy nawias zamykaj\u0105cy",
@@ -52,7 +52,7 @@ MathJax.Localization.addTranslation("pl","TeX",{
           InvalidMathMLAttr: "Nieprawid\u0142owy atrybut MathML: %1",
           UnknownAttrForElement: "%1 nie jest znanym atrybutem dla %2",
           MaxMacroSub1: "Przekroczono maksymaln\u0105 liczb\u0119 wywo\u0142a\u0144 makra; czy wyst\u0119puje rekursywne makro?",
-          MaxMacroSub2: "Przekroczono maksymaln\u0105 liczb\u0119 zast\u0105pie\u0144; czy wyst\u0119puje rekursywne \u015Brodowisko latex?",
+          MaxMacroSub2: "Przekroczono maksymaln\u0105 liczb\u0119 zast\u0105pie\u0144 MathJax; czy wyst\u0119puje rekursywne \u015Brodowisko LaTeX?",
           MissingArgFor: "Brakuje argumentu dla %1",
           ExtraAlignTab: "Nadmiarowy tabulator w \\cases",
           BracketMustBeDimension: "Argument w nawiasie dla %1 musi by\u0107 wymiarem",
@@ -89,13 +89,13 @@ MathJax.Localization.addTranslation("pl","TeX",{
           NoClosingChar: "Nie mo\u017Cna odnale\u017A\u0107 zamykaj\u0105cego %1",
           IllegalControlSequenceName: "Nieprawid\u0142owa nazwa sekwencji kontrolnej dla %1",
           IllegalParamNumber: "Nieprawid\u0142owa liczba parametr\u00F3w dla %1",
+          MissingCS: "Po %1 musi wyst\u0105pi\u0107 sekwencja kontrolna",
           CantUseHash2: "Nieprawid\u0142owe u\u017Cycie # w szablonie dla %1",
           SequentialParam: "Parametry dla %1 musz\u0105 by\u0107 ponumerowane rosn\u0105co",
           MissingReplacementString: "Brak \u0142a\u0144cucha zamiennego dla definicji %1",
           MismatchUseDef: "U\u017Cycie %1 niezgodne z definicj\u0105",
           RunawayArgument: "Zgin\u0105\u0142 argument dla %1?",
-          NoClosingDelim: "Nie mo\u017Cna znale\u017A\u0107\u00A0ko\u0144cz\u0105cego separatora dla %1",
-          MissingCS: "Po %1 musi wyst\u0105pi\u0107 sekwencja kontrolna"
+          NoClosingDelim: "Nie mo\u017Cna znale\u017A\u0107\u00A0ko\u0144cz\u0105cego separatora dla %1"
         }
 });
 
