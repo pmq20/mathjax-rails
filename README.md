@@ -1,46 +1,46 @@
 # MathJax-Rails
 
-We are living in an age, where displaying math on web pages is never hard, thanks to the great work of [MathJax](https://github.com/mathjax/MathJax). 
+We are living in an age where displaying math on web pages will never be hard - thanks to the great work of [MathJax](https://github.com/mathjax/MathJax). 
 
-To quote the description from its official website,
+To quote the description from it's official website,
 
   > [MathJax](https://github.com/mathjax/MathJax) is an open source JavaScript display engine for mathematics that works in all modern browsers.
   > 
   > No more setup for readers. No more browser plugins. No more font installations… It just works.
 
-## Why bother another gem?
+## Why bother with another gem?
 
-Integrating MathJax into a rails project however could be a pain. MathJax is HUGE. It makes your project folder swollen very much, because of the excessive amount of files contained in this package. Including mathjax inside your developing directory makes your TextMate less responsive, because when TextMate loses focus and then regains focus, it will scan the whole directory structure for change.
+Integrating MathJax into a rails project, however, could be a pain. MathJax is HUGE. It makes your project folder swollen, due to the excessive amount of files contained in this package. Including mathjax inside your developing directory makes your TextMate less responsive; when TextMate loses and then regains focus, it will scan the whole directory structure for changes.
 
-Another problem is, where to put? Put into `public` does not seem the best practice, since beginning with rails 3.1 `public` is by default ignored in production environment. Plus it is big, when using git, it leaves you no choice but to throw mathjax inside .gitignore, which makes sharing across developers less painless.
+Another problem is where to put it? `public` does not seem to be the best practice, since beginning with rails 3.1 `public` is by default ignored in production environment. Plus, it is big; when using git it leaves you no choice but to throw mathjax inside .gitignore, which makes sharing across developers less painless.
 
 ## So?
 
-That's the time when mathjax-rails comes into play!
+This is when mathjax-rails comes into play!
 
-* It maintains MathJax at a system-wide directory.
-* By simply including mathjax-rails in your Gemfile, all your rails app can benefit from MathJax immediately.
-* You can control the version of MathJax by controlling the version of mathjax-rails, which is done simply via bundler.
+* It maintains MathJax as a system-wide directory.
+* By simply including mathjax-rails in your Gemfile, all your rails apps can benefit from MathJax immediately.
+* You can control the version of MathJax through the version of mathjax-rails, which is done simply via bundler.
 
 ## Which version of MathJax does it use?
 
-We maintain mathjax-rails to always use the latest version of stable MathJax realeases.
+We maintain mathjax-rails to always use the latest version of stable MathJax releases.
 
 To see the actual version, check the constant Mathjax::Rails::MATHJAXVERSION.
 
 ## Usage
 
-add this line to your Gemfile
+add this line to your Gemfile:
 
 	gem 'mathjax-rails'
   
-then
+then:
 
 	$ bundle install
 
 ## The other gem
 
-The new gem is more recently mentained.Thank you Manu S Ajith. 
+The new gem is more recently maintained.Thank you Manu S Ajith. 
 
 [![Gem Version](https://badge.fury.io/rb/mathjax-rails.png)](http://badge.fury.io/rb/mathjax-rails)
 # MathjaxRails
@@ -64,27 +64,27 @@ Or install it yourself as:
 ## Usage
 
 
-add the following to config/routes.rb (you can change the name of course)
+add the following to config/routes.rb (you can change the name of course):
 
 ``` ruby
 mathjax 'mathjax'
 ```
 
-add the script tag inside app/views/layouts/application.html.erb
+add the script tag inside app/views/layouts/application.html.erb:
 
 ``` rhtml
 <%= mathjax_tag %>
 ```  
 
-and it is done!
+and you're done!
 
-To try it, write a simple formula, for example,
+To try it, write a simple formula, for example:
 
 	\[\int_a^b f(x) dx=F(b)-F(a)\]
 
 ## Configuration
 
-By default the `TeX-AMS_HTML-full.js` is loaded as the configuration file.
+By default, the `TeX-AMS_HTML-full.js` is loaded as the configuration file.
 
 If you do not want any configuration file to be loaded:
 
@@ -112,7 +112,7 @@ Additional configuration can be added directly before mathjax_tag, for example:
 
 For more options please consult the MathJax documentation.
 
-## What did it do to my rails project
+## What did it do to my rails project?
 
 Three simple things: it adds 1 controller `MathjaxRailsController`; 1 helper method `mathjax_tag`; 1 router method `mathjax`.
 
