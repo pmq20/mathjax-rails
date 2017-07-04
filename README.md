@@ -68,12 +68,7 @@ add the following to config/routes.rb (you can change the name of course):
 
 ``` ruby
 mathjax 'mathjax'
-```
-
-optional cache option:
-
-``` ruby
-mathjax 'mathjax', 30.days
+# mathjax 'mathjax', 1.day #optional cache options, defaults to 1.day
 ```
 
 add the script tag inside app/views/layouts/application.html.erb:
