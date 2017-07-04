@@ -3,6 +3,10 @@ class Mathjax::Rails::MathjaxRailsController < ActionController::Base
     ext = ''
     ext = ".#{params[:format]}" if params[:format]
     filename = params[:uri]+ext
+
+    clean_path = Pathname.new(filename).cleanpath.to_s
+    return render :status => 404 if clean_path != filename
+
     filepath = "../../../../vendor/#{Mathjax::Rails::DIRNAME}/#{filename}"
 
     extname = File.extname(filename)[1..-1]
@@ -12,6 +16,7 @@ class Mathjax::Rails::MathjaxRailsController < ActionController::Base
     options[:disposition] = 'inline'
     file = File.expand_path(filepath, __FILE__)
     if File.exists?(file)
+      expires_in (params[:cache] || 1.day), :public => true unless params[:cache] == false
       send_file file, options
     else
       render :status => 404
