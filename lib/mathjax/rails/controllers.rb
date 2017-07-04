@@ -16,7 +16,7 @@ class Mathjax::Rails::MathjaxRailsController < ActionController::Base
     options[:disposition] = 'inline'
     file = File.expand_path(filepath, __FILE__)
     if File.exists?(file)
-      response.headers["Expires"] = (params[:cache] || 1.day).from_now.httpdate
+      expires_in (params[:cache] || 1.day), :public => true unless params[:cache] == false
       send_file file, options
     else
       render :status => 404
