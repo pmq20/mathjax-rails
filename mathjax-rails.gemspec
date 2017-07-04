@@ -5,10 +5,10 @@ Gem::Specification.new do |s|
   s.name        = "mathjax-rails"
   s.version     = Mathjax::Rails::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Minqi Pan", "Manu S Ajith"]
-  s.email       = ["pmq2001@gmail.com", "neo@codingarena.in"]
-  s.homepage    = "https://github.com/pmq20/mathjax-rails"
-  s.summary     = "a simple gem to integrate MathJax with Rails 3"
+  s.authors     = ["Minqi Pan", "Manu S Ajith", 'Oliver Kuster']
+  s.email       = ["pmq2001@gmail.com", "neo@codingarena.in", 'olivervbk@gmail.com']
+  s.homepage    = "https://github.com/olivervbk/mathjax-rails"
+  s.summary     = "FORK of pmq200/mathjax-rails - a simple gem to integrate MathJax with Rails 3"
   s.description = "This gem maintains MathJax at a system-wide directory."
 
   s.required_rubygems_version = ">= 1.3.6"
