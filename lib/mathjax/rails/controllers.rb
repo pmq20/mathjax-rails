@@ -3,6 +3,10 @@ class Mathjax::Rails::MathjaxRailsController < ActionController::Base
     ext = ''
     ext = ".#{params[:format]}" if params[:format]
     filename = params[:uri]+ext
+
+    clean_path = Pathname.new(filename).cleanpath.to_s
+    return render :status => 404 if clean_path != filename
+
     filepath = "../../../../vendor/#{Mathjax::Rails::DIRNAME}/#{filename}"
 
     extname = File.extname(filename)[1..-1]
