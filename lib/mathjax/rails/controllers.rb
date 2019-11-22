@@ -3,7 +3,7 @@ class Mathjax::Rails::MathjaxRailsController < ActionController::Base
     ext = ''
     ext = ".#{params[:format]}" if params[:format]
     filename = params[:uri]+ext
-    filepath = "../../../../vendor/#{Mathjax::Rails::DIRNAME}/#{filename}"
+    filepath = "../../../../vendor/#{Mathjax::Rails::DIRNAME}/es5/#{filename}"
 
     extname = File.extname(filename)[1..-1]
     mime_type = Mime::Type.lookup_by_extension(extname)
