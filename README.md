@@ -1,11 +1,11 @@
 # MathJax-Rails
 
-We are living in an age where displaying math on web pages will never be hard - thanks to the great work of [MathJax](https://github.com/mathjax/MathJax). 
+We are living in an age where displaying math on web pages will never be hard - thanks to the great work of [MathJax](https://github.com/mathjax/MathJax).
 
 To quote the description from it's official website,
 
   > [MathJax](https://github.com/mathjax/MathJax) is an open source JavaScript display engine for mathematics that works in all modern browsers.
-  > 
+  >
   > No more setup for readers. No more browser plugins. No more font installations… It just works.
 
 ## Why bother with another gem?
@@ -33,14 +33,14 @@ To see the actual version, check the constant Mathjax::Rails::MATHJAXVERSION.
 add this line to your Gemfile:
 
 	gem 'mathjax-rails'
-  
+
 then:
 
 	$ bundle install
 
 ## The other gem
 
-The new gem is more recently maintained.Thank you Manu S Ajith. 
+The new gem is more recently maintained.Thank you Manu S Ajith.
 
 [![Gem Version](https://badge.fury.io/rb/mathjax-rails.png)](http://badge.fury.io/rb/mathjax-rails)
 # MathjaxRails
@@ -74,7 +74,7 @@ add the script tag inside app/views/layouts/application.html.erb:
 
 ``` rhtml
 <%= mathjax_tag %>
-```  
+```
 
 and you're done!
 
@@ -84,28 +84,23 @@ To try it, write a simple formula, for example:
 
 ## Configuration
 
-By default, the `TeX-AMS_HTML-full.js` is loaded as the configuration file.
+By default, the `tex-chtml-full.js` component is loaded.
 
-If you do not want any configuration file to be loaded:
-
-``` rhtml
-<%= mathjax_tag :config=>false %>
-```
-If you want to load another configuration file, say `Accessible-full.js`:
+If you want to load another component file, say `tex-svg-full.js`:
 
 ``` rhtml
-<%= mathjax_tag :config=>'Accessible-full.js' %>
+<%= mathjax_tag :component => 'tex-svg-full.js' %>
 ```
 Additional configuration can be added directly before mathjax_tag, for example:
 
 ``` rhtml
-<script type="text/x-mathjax-config">
-	MathJax.Hub.Config({
-	 tex2jax: {
-	   inlineMath: [ ['$','$'] ],
-	   processEscapes: true
-	 }
-	});
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [ ['$','$'] ],
+    processEscapes: true
+  }
+};
 </script>
 <%= mathjax_tag %>
 ```
@@ -124,7 +119,7 @@ If you have a fast CDN service at hand, you don't need this gem.
 
 Putting your MathJax at CDN is probably the best choice.
 
-By `dmarczal`, 
+By `dmarczal`,
 
 To work in rails 3.1 on production environment wih ngnix I just comment the follow line in production.rb
 
