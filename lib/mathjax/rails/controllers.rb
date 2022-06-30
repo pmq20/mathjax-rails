@@ -17,4 +17,7 @@ class Mathjax::Rails::MathjaxRailsController < ActionController::Base
       render :status => 404
     end
   end
+
+  def verify_authenticity_token
+  end
 end

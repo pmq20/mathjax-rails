@@ -20,5 +20,4 @@ Gem::Specification.new do |s|
   s.executables  = `git ls-files`.split("\n").select{|f| f =~ /^bin/}
   s.require_path = 'lib'
   s.license      = 'MIT'
-  
 end
