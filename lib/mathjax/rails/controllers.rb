@@ -11,7 +11,7 @@ class Mathjax::Rails::MathjaxRailsController < ActionController::Base
     options[:type] = mime_type.to_s unless mime_type.nil?
     options[:disposition] = 'inline'
     file = File.expand_path(filepath, __FILE__)
-    if File.exists?(file)
+    if File.exist?(file)
       send_file file, options
     else
       render :status => 404
